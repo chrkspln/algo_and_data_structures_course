@@ -17,7 +17,8 @@
 #   денну норму корму, другий - рiвень жадiбностi кожного хом’ячка.
 #   Денні норми є цілими додатніми числами і гарантовано меншими за 109.
 #   Іноді у вас можуть бути не жадібні хом’ячки, але також можуть
-#   траплятись і надзвичайно жадібні, рівень жадібності може бути як нульовим, так і великим цілим числом.
+#   траплятись і надзвичайно жадібні, рівень жадібності може бути 
+#   як нульовим, так і великим цілим числом.
 #
 #   Приклад 1
 #   S = 7 C = 3 hamsters = `[ [1 2], [2 2], [3 1]]``
@@ -41,52 +42,40 @@ import unittest
 
 
 def how_many_hamsters(hamsters_list, hamsters_quantity, daily_food):
-
-    # якщо список пустий - повертаємо 0
     if not hamsters_list:
         return 0
 
-    # сортуємо список хом'ячків за жадібністю, від меншої до більшої
-    hamsters_list = sorted(hamsters_list, key=lambda arr: arr[1])
-    hamsters_list = sorted(hamsters_list)
+    result = hamsters_search(hamsters_list, 0, hamsters_quantity - 1, daily_food, 0)
+    return result
 
-    adopted_hamsters_list = []
-    food_already_needed = 0
 
-    # змінна для проходження по кожному рядку (кожному хом'ячку)
-    _ = 0
-    while food_already_needed < daily_food and _ < hamsters_quantity:
+def hamsters_search(list, end, food_av, count, prev_count):
+    start = 0
+    mid = (start + end) // 2
+    mid = count
+    food_needed_list = []
 
-        # якщо ще ні одного хом'ячка не було додано до списку - додаєм найпершого,
-        # бо він має найменшу жадібність з усіх наявних
-        if _ == 0:
-            adopted_hamsters_list.append([hamsters_list[_][0], hamsters_list[_][1]])
-        else:
+    for for_one, greedy in list:
+        food_needed_list.append(for_one + greedy * mid)
+        
+    food_needed_list = sorted(food_needed_list)
+    required_food = sum(food_needed_list[:mid])
 
-            # для уже наявних хом'ячків в списку на одомашнення
-            # вираховуємо сумарну кількість їжі:
-            # сумарна к-ть += їжа для одного + (жадібність * кількість всіх хом'ячків)
-            # чому ВСІХ у списку, хоча хом'ячок їсть лише за своїх сусідів,
-            # а за себе жадібність не рахується?
-            # бо по факту формула іде (...) * len(adopted - 1 + 1):
-            # мінус хом'ячок для якого рахуєм,
-            # плюс той, кого хочемо додати. виходить 0
-            for food_for_one, greedy_food in adopted_hamsters_list:
-                food_already_needed += food_for_one + greedy_food * len(adopted_hamsters_list)
-
-            # додаємо до сумарної кількості норму в день на того хом'ячка,
-            # якого хочемо додати. логіка формули аналогічна
-            food_already_needed += hamsters_list[_][0] + hamsters_list[_][1] * len(adopted_hamsters_list)
-            if food_already_needed < daily_food:
-                adopted_hamsters_list.append([hamsters_list[_][0], hamsters_list[_][1]])
-                food_already_needed = 0
-
-        # незалежно від операцій змінна йде += 1
-        # аби перейти до наступного хом'ячка
-        _ += 1
-
-    # ф-ія повертає кількість хом'ячків на одомашнення
-    return len(adopted_hamsters_list)
+    if required_food > food_av:
+        if prev_count == count:
+            return count
+        elif prev_count < count:
+            hamsters_search(list[:mid], mid - 1, food_av, 0, prev_count)
+            return count
+    elif required_food < food_av and len(list) != 1:
+        if prev_count > count:
+            return count
+        elif prev_count == count:
+            count += 1
+            hamsters_search(list[mid:], len(list) - 1, food_av, count, prev_count)
+            return count
+    else:
+        return len(food_needed_list)
 
 
 class Lab2Test(unittest.TestCase):
