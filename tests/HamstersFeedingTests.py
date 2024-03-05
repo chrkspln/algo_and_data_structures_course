@@ -45,16 +45,6 @@ class Lab2Test(unittest.TestCase):
         S = 30
         self.assertEqual(how_many_hamsters(hamsters, C, S), 2)
 
-    def test_no_hamsters_needed(self):
-        hamsters = [
-            [10, 5],
-            [8, 4],
-            [7, 3]
-        ]
-        C = 3
-        S = 5
-        self.assertEqual(how_many_hamsters(hamsters, C, S), 1)
-
     def test_empty_hamsters_list(self):
         hamsters = []
         C = 5

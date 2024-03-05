@@ -1,39 +1,25 @@
-import unittest
-
-
 def how_many_hamsters(hamsters_list, hamsters_quantity, daily_food):
     # якщо список пустий - повертаємо 0
     if not hamsters_list:
         return 0
+    count = [0] * hamsters_quantity
+    return hamsters_search(hamsters_list, 0, len(hamsters_list) - 1, count, daily_food)
 
-    result = hamsters_search(hamsters_list, len(hamsters_list) - 1, daily_food, 0, 0)
-    return result
 
-
-def hamsters_search(list, end, food_av, count, prev_count):
-    start = 0
+def hamsters_search(list, start, end, count, food_available):
     mid = (start + end) // 2
-    food_needed_list = []
-
-    for for_one, greedy in list:
-        food_needed_list.append(for_one + greedy * mid)
-
-    food_needed_list = sorted(food_needed_list)
-    required_food = sum(food_needed_list[:mid])
-
-    if required_food > food_av:
-        if prev_count == count:
-            return mid + 1
-        elif prev_count < count:
-            prev_count = count
-            hamsters_search(list[:mid], mid - 1, food_av, 0, prev_count)
-            return mid + 1
-    elif required_food < food_av and len(list) != 1:
-        if prev_count > count:
-            return mid + 1
-        elif prev_count == count:
-            count += 1
-            hamsters_search(list[mid:], len(list) - 1, food_av, count, prev_count)
-            return mid + 1
+    temp_array = sorted([x[0] + x[1] * mid for x in list])
+    if sum(temp_array[:mid + 1]) == food_available:
+        return mid + 1
+    elif sum(temp_array[:mid + 1]) > food_available:
+        count[mid] = sum(temp_array[:mid + 1])
+        return hamsters_search(list, start, mid - 1, count, food_available)
     else:
-        return len(food_needed_list)
+        if mid + 1 > len(count) - 1:
+            return mid + 1
+        count[mid] = sum(temp_array[:mid + 1])
+        if count[mid + 1] > food_available:
+            return mid + 1
+        else:
+            return hamsters_search(list, mid + 1, end, count, food_available)
+

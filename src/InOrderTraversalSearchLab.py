@@ -26,3 +26,31 @@ class BinaryTree:
         self.left = left
         self.right = right
         self.parent = parent
+
+
+def find_successor(tree: BinaryTree, node: BinaryTree) -> BinaryTree:
+    next_node = next(node)
+    while next_node.value <= node.value:
+        next_node = next(next_node)
+    return next_node.value
+
+
+def next(node: BinaryTree) -> BinaryTree:
+    if node.right:
+        return most_left_child(node.right)
+    else:
+        return find_untraversed_parent(node)
+
+
+def most_left_child(node):
+    curr_node = node
+    while curr_node.left:
+        curr_node = curr_node.left
+    return curr_node
+
+
+def find_untraversed_parent(node):
+    curr_node = node
+    while curr_node.parent and curr_node.parent.right == curr_node:
+        curr_node = curr_node.parent
+    return curr_node.parent
