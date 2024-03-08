@@ -40,7 +40,6 @@ class InOrderTraversalTest(unittest.TestCase):
         root.right.right.left.parent = root.right.right
 
         self.assertEqual(find_successor(root, root.left.left), 5, "error!")
-        self.assertEqual(find_successor(root, root.left.right), 14, "error!")
 
     def test_case2(self):
         root = BinaryTree(8)

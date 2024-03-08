@@ -29,13 +29,13 @@ class BinaryTree:
 
 
 def find_successor(tree: BinaryTree, node: BinaryTree) -> BinaryTree:
-    next_node = next(node)
+    next_node = next_inorder_node(node)
     while next_node.value <= node.value:
-        next_node = next(next_node)
+        next_node = next_inorder_node(next_node)
     return next_node.value
 
 
-def next(node: BinaryTree) -> BinaryTree:
+def next_inorder_node(node: BinaryTree) -> BinaryTree:
     if node.right:
         return most_left_child(node.right)
     else:
