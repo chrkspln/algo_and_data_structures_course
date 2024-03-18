@@ -2,53 +2,36 @@ import unittest
 from src.AVLPriorityQueue import *
 
 
-class AVLPriorityQueueTest(unittest.TestCase):
+class TestPriorityQueue(unittest.TestCase):
+    root = AVLTreeNode(4, 5)
+    queue = PriorityQueue(root)
+    def test_insertion_and_deletion_normal_case(self):
+        node1 = AVLTreeNode(3, 3)
+        node2 = AVLTreeNode(7, 6)
+        self.queue.enqueue(node1)
+        self.queue.enqueue(node2)
+        self.assertEqual(self.queue.avl_tree.root.value, 4)
+        self.assertEqual(self.queue.avl_tree.root.left.value, 3)
+        self.assertEqual(self.queue.avl_tree.root.right.value, 7)
 
-    def test_enqueue(self):
-        node = AVLTreeNode(10, 5)
-        queue = PriorityQueue(node)
-        node1 = AVLTreeNode(6, 3)
-        queue.enqueue(node1)
-        node2 = AVLTreeNode(2, 1)
-        queue.enqueue(node2)
-        node3 = AVLTreeNode(7, 2)
-        queue.enqueue(node3)
-        node4 = AVLTreeNode(8, 4)
-        queue.enqueue(node4)
-        node5 = AVLTreeNode(1, 0)
-        queue.enqueue(node5)
-        node6 = AVLTreeNode(3, 6)
-        queue.enqueue(node6)
-        node7 = AVLTreeNode(12, 2)
-        queue.enqueue(node7)
-        node8 = AVLTreeNode(5, 7)
-        queue.enqueue(node8)
+    def test_priority_duplicates(self):
+        node1 = AVLTreeNode(3, 3)
+        node2 = AVLTreeNode(3, 3)
+        node3 = AVLTreeNode(7, 6)
+        self.queue.enqueue(node1)
+        self.queue.enqueue(node2)
+        self.queue.enqueue(node3)
+        self.assertEqual(self.queue.avl_tree.root.value, 4)
+        self.assertEqual(self.queue.avl_tree.root.left.value, 3)
+        self.assertEqual(self.queue.avl_tree.root.right.value, 7)
 
-        queue.print_queue()
+    def test_empty_tree(self):
+        root = AVLTreeNode()
+        queue = PriorityQueue(root)
+        value, priority = queue.dequeue()
+        self.assertEqual(value, None)
+        self.assertEqual(priority, None)
 
-    def test_dequeue(self):
-        node = AVLTreeNode(10, 5)
-        queue = PriorityQueue(node)
-        node1 = AVLTreeNode(6, 3)
-        queue.enqueue(node1)
-        node2 = AVLTreeNode(2, 1)
-        queue.enqueue(node2)
-        node3 = AVLTreeNode(7, 2)
-        queue.enqueue(node3)
-        node4 = AVLTreeNode(8, 4)
-        queue.enqueue(node4)
-        node5 = AVLTreeNode(1, 0)
-        queue.enqueue(node5)
-        node6 = AVLTreeNode(3, 6)
-        queue.enqueue(node6)
-        node7 = AVLTreeNode(12, 2)
-        queue.enqueue(node7)
-        node8 = AVLTreeNode(5, 7)
-        queue.enqueue(node8)
 
-        queue.dequeue()
-        queue.dequeue()
-        queue.dequeue()
-        queue.dequeue()
-
-        queue.print_queue()
+if __name__ == '__main__':
+    unittest.main()

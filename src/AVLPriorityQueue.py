@@ -51,6 +51,9 @@ class AVLTree:
             start = start.parent
 
     def insert_element(self, root: AVLTreeNode, node: AVLTreeNode):
+        if not root:
+            return
+
         if node.priority <= root.priority:
             if not root.left:
                 root.left = node
@@ -208,7 +211,8 @@ class AVLTree:
             node.right.parent = node.parent
             node.parent.left = node.right
         else:
-            node.parent.left = None
+            if node.parent is not None:
+                node.parent.left = None
 
         node = root
         while node:
