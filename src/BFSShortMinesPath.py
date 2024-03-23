@@ -1,0 +1,110 @@
+# Рівень 3
+# Варіант 4
+#
+# Нехай у вас задане прямокутне поле, на якому встановлені датчики в певних місцях.
+# Перетніть його найкоротшим безпечним шляхом, не активуючи датчики.
+#
+# Прямокутне поле має форму матриці M × N, і нам потрібно знайти найкоротший шлях від
+# будь-якої клітинки в першому стовпці до будь-якої клітинки в останньому стовпці матриці.
+# Датчики позначаються в матриці значенням 0, і всі її вісім суміжних осередків також
+# можуть активувати датчики. Шлях можна побудувати лише з комірок зі значенням 1,
+# і в будь-який момент ми можемо рухатися лише на один крок в одному з чотирьох напрямків.
+# Допустимі ходи:
+#
+# Вгору:    (x, y) -> (x, y + 1)
+# Ліворуч:  (x, y) -> (x - 1, y)
+# Вниз:     (x, y) -> (x, y - 1)
+# Праворуч: (x, y) -> (x + 1, y)
+# Алгоритм має вивести довжину найкоротшого шляху, або -1 якщо такого не існує.
+
+def get_start_node(grid: [[int]]) -> (int, int):
+    row = 0
+    value = 0
+    while not value:
+        value = grid[row][0]
+        row += 1
+    return row - 1, 0
+
+
+def set_0(grid: [[int]]) -> [[int]]:
+    mines_positions = []
+    for y in range(len(grid)):
+        for x in range(len(grid[0])):
+            if grid[y][x] == 0:
+                mines_positions.append([y, x])
+    for position in mines_positions:
+        position_neighbors = get_neighbors(position, grid)
+        for y, x in position_neighbors:
+            grid[y][x] = 0
+    return grid
+
+
+def get_neighbors(node: (int, int), grid: [[int]]) -> list:
+    y = node[0]
+    x = node[1]
+    neighboring_nodes = []
+    # moving right
+    if x < len(grid[0]) - 1:
+        if grid[y][x + 1] == 1:
+            neighboring_nodes.append((y, x + 1))
+    # moving left
+    if x > 0:
+        if grid[y][x - 1] == 1:
+            neighboring_nodes.append((y, x - 1))
+    # moving down
+    if y < len(grid) - 1:
+        if grid[y + 1][x] == 1:
+            neighboring_nodes.append((y + 1, x))
+    # moving up
+    if y > 0:
+        if grid[y - 1][x] == 1:
+            neighboring_nodes.append((y - 1, x))
+    # taking diagonal nodes if were zeroing the grig
+    if grid[y][x] == 0:
+        if x > 0 and y > 0:
+            neighboring_nodes.append((y - 1, x - 1))
+        if x > 0 and y < len(grid) - 1:
+            neighboring_nodes.append((y + 1, x - 1))
+        if (x < len(grid[0]) - 1) and y > 0:
+            neighboring_nodes.append((y - 1, x + 1))
+        if (x < len(grid[0]) - 1) and y < len(grid) - 1:
+            neighboring_nodes.append((y + 1, x + 1))
+
+    return neighboring_nodes
+
+
+def find_path(start_point: (int, int), grid: [[int]]):
+    visited = []
+    queue = [(start_point, [])]
+    while queue:
+        node, path = queue.pop(0)
+        path.append(node)
+        visited.append(node)
+
+        if node[1] == len(grid[0]) - 1:
+            return len(path)
+
+        neighboring_nodes = get_neighbors(node, grid)
+        for neighbor in neighboring_nodes:
+            if neighbor not in visited:
+                queue.append((neighbor, path[:]))
+
+    return -1
+
+
+def short_mines_path_search(grid: [[int]]) -> int:
+    grid = set_0(grid)
+    start_node = get_start_node(grid)
+    return find_path(start_node, grid)
+
+
+if __name__ == '__main__':
+    grid = [
+        [1, 1, 1, 1, 0, 1],
+        [1, 1, 1, 1, 1, 1],
+        [0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+    ]
+    print(short_mines_path_search(grid))
