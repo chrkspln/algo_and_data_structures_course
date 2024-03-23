@@ -17,13 +17,14 @@
 # Праворуч: (x, y) -> (x + 1, y)
 # Алгоритм має вивести довжину найкоротшого шляху, або -1 якщо такого не існує.
 
-def get_start_node(grid: [[int]]) -> (int, int):
+def get_start_nodes_list(grid: [[int]]) -> (int, int):
     row = 0
-    value = 0
-    while not value:
-        value = grid[row][0]
+    start_nodes = []
+    while row < len(grid) - 1:
+        if grid[row][0] == 1:
+            start_nodes.append((row, 0))
         row += 1
-    return row - 1, 0
+    return start_nodes
 
 
 def set_0(grid: [[int]]) -> [[int]]:
@@ -73,38 +74,28 @@ def get_neighbors(node: (int, int), grid: [[int]]) -> list:
     return neighboring_nodes
 
 
-def find_path(start_point: (int, int), grid: [[int]]):
-    visited = []
-    queue = [(start_point, [])]
-    while queue:
-        node, path = queue.pop(0)
-        path.append(node)
-        visited.append(node)
+def find_path(start_nodes: [(int, int)], grid: [[int]]):
+    shortest_path_list = []
+    for start_point in start_nodes:
+        visited = []
+        queue = [(start_point, [])]
+        while queue:
+            node, path = queue.pop(0)
+            path.append(node)
+            visited.append(node)
 
-        if node[1] == len(grid[0]) - 1:
-            return len(path)
+            if node[1] == len(grid[0]) - 1:
+                shortest_path_list.append(len(path))
 
-        neighboring_nodes = get_neighbors(node, grid)
-        for neighbor in neighboring_nodes:
-            if neighbor not in visited:
-                queue.append((neighbor, path[:]))
+            neighboring_nodes = get_neighbors(node, grid)
+            for neighbor in neighboring_nodes:
+                if neighbor not in visited:
+                    queue.append((neighbor, path[:]))
 
-    return -1
+    return min(shortest_path_list) if shortest_path_list else -1
 
 
 def short_mines_path_search(grid: [[int]]) -> int:
     grid = set_0(grid)
-    start_node = get_start_node(grid)
-    return find_path(start_node, grid)
-
-
-if __name__ == '__main__':
-    grid = [
-        [1, 1, 1, 1, 0, 1],
-        [1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1],
-    ]
-    print(short_mines_path_search(grid))
+    start_nodes = get_start_nodes_list(grid)
+    return find_path(start_nodes, grid)
