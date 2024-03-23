@@ -71,7 +71,9 @@ class AVLTree:
 
         while node:
 
-            node.balance = (node.left.height - node.right.height if node.left and node.right else 1)
+            node.balance = (
+                node.left.height - node.right.height if node.left and node.right else 1
+            )
             if root.balance in [-1, 0, 1]:
                 node = node.parent
             else:
@@ -217,7 +219,9 @@ class AVLTree:
         node = root
         while node:
             self.update_height(node)
-            node.balance = (node.left.height - node.right.height if node.left and node.right else 0)
+            node.balance = (
+                node.left.height - node.right.height if node.left and node.right else 0
+            )
 
             if root.balance in [-1, 0, 1]:
                 node = node.parent
