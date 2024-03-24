@@ -18,7 +18,7 @@
 # Алгоритм має вивести довжину найкоротшого шляху, або -1 якщо такого не існує.
 
 
-def get_start_nodes_list(grid: [[int]]) -> (int, int):
+def get_start_nodes_list(grid: [[int]]) -> [(int, int)]:
     row = 0
     start_nodes = []
     while row < len(grid) - 1:
