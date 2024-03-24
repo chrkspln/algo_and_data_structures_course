@@ -63,9 +63,3 @@ def find_server_position(
         return min(max_routers_latency)
     else:
         return -1
-
-
-v, e = 3, 2
-clients = [1, 3]
-connections = [[1, 2, 50], [2, 3, 1000000000]]
-print(find_server_position(v, e, clients, connections))
