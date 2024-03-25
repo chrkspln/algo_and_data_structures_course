@@ -5,6 +5,7 @@ from src.AVLPriorityQueue import *
 class TestPriorityQueue(unittest.TestCase):
     root = AVLTreeNode(4, 5)
     queue = PriorityQueue(root)
+
     def test_insertion_and_deletion_normal_case(self):
         node1 = AVLTreeNode(3, 3)
         node2 = AVLTreeNode(7, 6)
@@ -33,5 +34,5 @@ class TestPriorityQueue(unittest.TestCase):
         self.assertEqual(priority, None)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

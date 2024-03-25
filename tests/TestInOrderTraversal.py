@@ -61,5 +61,5 @@ class InOrderTraversalTest(unittest.TestCase):
         self.assertEqual(find_successor(root, root.left.right), 14, "error!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
