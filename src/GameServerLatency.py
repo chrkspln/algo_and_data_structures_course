@@ -13,6 +13,28 @@
 # (яке ми отримаємо при оптимальному розташуваннi сервера).
 
 import heapq
+import os
+
+
+def read_input(file_name):
+    v, e = 0, 0
+    clients_list, connections = [], []
+    with open(file_name) as file:
+        if os.path.getsize(file_name) != 0:
+            v, e = map(int, file.readline().split())
+            clients_list = list(map(int, file.readline().split()))
+            for _ in range(e):
+                start, end, latency = map(int, file.readline().split())
+                connections.append([start, end, latency])
+    file.close()
+    return v, e, clients_list, connections if file else None
+
+
+def write_output(path, file_name):
+    with open(file_name, "w") as file:
+        file.write(str(path))
+    file.close()
+    return file
 
 
 def shortest_paths_to_clients(
@@ -41,9 +63,8 @@ def shortest_paths_to_clients(
     return dist_to_clients
 
 
-def find_server_position(
-    v: int, e: int, clients_list: [int], connections: [[int]]
-) -> int:
+def find_server_position(file_name, output_file):
+    v, e, clients_list, connections = read_input(file_name)
     if v and e and clients_list and connections:
         routers = set(x for x in range(1, v + 1))
         routers.difference_update(clients_list)
@@ -60,6 +81,7 @@ def find_server_position(
             max_routers_latency.append(
                 max(shortest_paths_to_clients(list_view, router, clients_list))
             )
-        return min(max_routers_latency)
+        latency = min(max_routers_latency)
+        return write_output(latency, output_file)
     else:
-        return -1
+        return write_output(-1, output_file)
