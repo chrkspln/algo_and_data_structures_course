@@ -4,31 +4,22 @@ from src.BFSShortMinesPath import *
 
 class TestBFSShortMinesPath(unittest.TestCase):
     def test_normal_case(self):
-        grid = [
-            [0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        ]
-        self.assertEqual(short_mines_path_search(grid), 12)
-
-    def test_shortest_path_isnt_from_first_node(self):
-        grid = [
-            [1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1],
-        ]
-        self.assertEqual(short_mines_path_search(grid), 6)
+        file = "../src/input_BFSShortMinesPath1.txt"
+        out = "../src/output_BFSShortMinesPath1.txt"
+        short_mines_path_search(file, out)
+        with open("../src/output_BFSShortMinesPath1.txt") as output_file:
+            output = output_file.read()
+        expected = (
+            "([(2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6),"
+            " (1, 6), (0, 6), (0, 7), (0, 8), (0, 9)], 12)"
+        )
+        self.assertEqual(output, expected)
 
     def test_empty_input(self):
-        grid = [[]]
-        self.assertEqual(short_mines_path_search(grid), -1)
+        file = "../src/input_BFSShortMinesPath2.txt"
+        out = "../src/output_BFSShortMinesPath2.txt"
+        short_mines_path_search(file, out)
+        with open("../src/output_BFSShortMinesPath2.txt") as output_file:
+            output = output_file.read()
+        expected = "(-1, -1)"
+        self.assertEqual(output, expected)

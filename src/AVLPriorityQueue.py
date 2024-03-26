@@ -1,267 +1,143 @@
-#   Рівень 3
-#   Варіант 2
-#
-#   Реалізуйте структуру даних "черга з пріоритетами" на основі  AVL-дерева,
-#   в якому  батьківський елемент має вищий пріоритет, ніж елемент справа,
-#   або нижчий або рівний пріоритет, ніж пріоритет його лівої дитини.
-#
-#   Операції, які підтримує ваша черга:
-#
-#   1. Вставка елемента з заданим значенням та пріоритетом до черги.
-#   2. Видалення та повернення елемента з найвищим пріоритетом з черги.
-#   3. Перегляд черги без її зміни.
-#
-#   Для реалізації такої черги з пріоритетами слід використати
-#   окремий клас `Node`, де кожен елемент буде мати два поля: значення та пріоритет.
-#   При вставці елемента до черги, його потрібно розмістити
-#   у відповідному порядку з урахуванням пріоритету.
+# Рівень 3
+# Варіант 2
 
 
-class AVLTreeNode:
-    def __init__(self, value=None, priority=None):
-        self.parent = None
-        self.right = None
+class Node:
+    def __init__(self, value, priority):
         self.left = None
+        self.right = None
+        self.parent = None
+        self.height = 1
         self.value = value
         self.priority = priority
-        self.height = 1
-        self.balance = 0
+
+
+def get_height(node):
+    if node is None:
+        return 0
+    return node.height
 
 
 class AVLTree:
-    def __init__(self, node: AVLTreeNode):
-        self.root = node
+    def __init__(self, value, priority):
+        self.root = Node(value, priority)
 
-    def update_height(self, node: AVLTreeNode):
-        if not node:
-            return
-
-        start = node
-        while start:
-            if start.left is not None:
-                if start.right is not None:
-                    start.height = 1 + max(start.left.height, start.right.height)
-                else:
-                    start.height = 1 + start.left.height
-            elif start.right is not None:
-                start.height = 1 + start.right.height
-            else:
-                start.height = 1
-
-            start = start.parent
-
-    def insert_element(self, root: AVLTreeNode, node: AVLTreeNode):
-        if not root:
-            return
-
-        if node.priority <= root.priority:
-            if not root.left:
-                root.left = node
-                node.parent = root
-            else:
-                self.insert_element(root.left, node)
-        elif node.priority > root.priority:
-            if not root.right:
-                root.right = node
-                node.parent = root
-            else:
-                self.insert_element(root.right, node)
-
-            self.update_height(node)
-
-        while node:
-
-            node.balance = (
-                node.left.height - node.right.height if node.left and node.right else 1
-            )
-            if root.balance in [-1, 0, 1]:
-                node = node.parent
-            else:
-                # rl-case
-                if node.balance < -1 and node.priority < node.right.priority:
-                    self.rlcase(node)
-                # rr-case
-                if node.balance < -1 and node.priority > node.right.priority:
-                    self.left_rotation(node)
-                # lr-case
-                if node.balance > 1 and node.priority > node.right.priority:
-                    self.lrcase(node)
-                # ll-case
-                if node.balance > 1 and node.priority < node.right.priority:
-                    self.right_rotation(node)
-
-    def right_rotation(self, node: AVLTreeNode):
-        z = node
-        y = z.left
-        x = y.left
-        p = z.parent
-        temp = None
-
-        if y.right:
-            temp = y.right
-
-        if p:
-            if p.left == z:
-                p.left = y
-            else:
-                p.right = y
-
-        y.right = z
-        z.parent = y
-        if temp:
-            z.left = temp
-
-        if not p:
-            self.root = y
-            y.parent = None
-
-        self.update_height(x)
-        self.update_height(y)
-        self.update_height(z)
-
-    def left_rotation(self, node: AVLTreeNode):
-        z = node
-        y = z.right
-        x = y.right
-        p = z.parent
-        temp = None
-
-        if y.left:
-            temp = y.left
-
-        if p:
-            if p.left == z:
-                p.left = y
-            else:
-                p.right = y
-
-        y.left = z
-        z.parent = y
-        if temp:
-            z.right = temp
-
-        if not p:
-            self.root = y
-            y.parent = None
-
-        self.update_height(x)
-        self.update_height(y)
-        self.update_height(z)
-
-    def rrcase(self, node: AVLTreeNode):
-        self.left_rotation(node)
-
-    def llcase(self, node: AVLTreeNode):
-        self.right_rotation(node)
-
-    def lrcase(self, node: AVLTreeNode):
-        z = node
-        y = z.left
-        x = y.right
-        p = z.parent
-        temp = None
-
-        if x.right:
-            temp = x.right
-
-        z.left = x
-        x.parent = z
-        z.left = y
-
-        if temp:
-            y.right = temp
-
-        self.right_rotation(node)
-        self.update_height(y)
-
-    def rlcase(self, node: AVLTreeNode):
-        z = node
-        y = z.right
-        x = y.left
-        p = z.parent
-        temp = None
-
-        if x.left:
-            temp = x.left
-
-        z.right = x
-        x.parent = z
-        z.right = y
-
-        if temp:
-            y.left = temp
-
-        self.left_rotation(node)
-        self.update_height(y)
-
-    def delete_element(self, root: AVLTreeNode):
-        if not root:
-            return
-
-        node = root
-        parent = None
-        while node.left:
-            parent = node.parent
-            node = node.left
-
-        find_node = node
-        if node == root:
-            if root.right:
-                root.right = root
-                root.parent = None
-        if node.right:
-            node.right.parent = node.parent
-            node.parent.left = node.right
+    def _left_rotate(self, node):
+        new_root = node.right
+        node.right = new_root.left
+        if new_root.left is not None:
+            new_root.left.parent = node
+        new_root.parent = node.parent
+        if node.parent is None:
+            self.root = new_root
+        elif node == node.parent.left:
+            node.parent.left = new_root
         else:
-            if node.parent is not None:
-                node.parent.left = None
+            node.parent.right = new_root
+        new_root.left = node
+        node.parent = new_root
+        node.height = 1 + max(get_height(node.left), get_height(node.right))
+        new_root.height = 1 + max(get_height(new_root.left), get_height(new_root.right))
 
-        node = root
-        while node:
-            self.update_height(node)
-            node.balance = (
-                node.left.height - node.right.height if node.left and node.right else 0
-            )
+    def _right_rotate(self, node):
+        new_root = node.left
+        node.left = new_root.right
+        if new_root.right is not None:
+            new_root.right.parent = node
+        new_root.parent = node.parent
+        if node.parent is None:
+            self.root = new_root
+        elif node == node.parent.right:
+            node.parent.right = new_root
+        else:
+            node.parent.left = new_root
+        new_root.right = node
+        node.parent = new_root
+        node.height = 1 + max(get_height(node.left), get_height(node.right))
+        new_root.height = 1 + max(get_height(new_root.left), get_height(new_root.right))
 
-            if root.balance in [-1, 0, 1]:
-                node = node.parent
-            else:
-                # rl-case
-                if node.balance < -1 and node.priority < node.right.priority:
-                    self.rlcase(node)
-                # rr-case
-                if node.balance < -1 and node.priority > node.right.priority:
-                    self.left_rotation(node)
-                # lr-case
-                if node.balance > 1 and node.priority > node.right.priority:
-                    self.lrcase(node)
-                # ll-case
-                if node.balance > 1 and node.priority < node.right.priority:
-                    self.right_rotation(node)
+    def _make_balance(self, node):
+        while node is not None:
+            left_height = get_height(node.left)
+            right_height = get_height(node.right)
+            node.height = 1 + max(left_height, right_height)
+            balance = left_height - right_height
+            if balance > 1:
+                if get_height(node.left.left) >= get_height(node.left.right):
+                    self._right_rotate(node)
+                else:
+                    self._left_rotate(node.left)
+                    self._right_rotate(node)
+            elif balance < -1:
+                if get_height(node.right.right) >= get_height(node.right.left):
+                    self._left_rotate(node)
+                else:
+                    self._right_rotate(node.right)
+                    self._left_rotate(node)
+            node = node.parent
 
-        return find_node.value, find_node.priority
-
-    def tree_print(self, root):
-        if not root:
+    def insert(self, value, priority):
+        if self.root is None:
+            self.root = Node(value, priority)
             return
+        self._insert_recursion_dfs(self.root, value, priority)
+        self._make_balance(self.root)
 
-        self.tree_print(root.left)
-        print("value: " + str(root.value) + " priority: " + str(root.priority))
-        self.tree_print(root.right)
+    def _insert_recursion_dfs(self, node, value, priority):
+        if priority <= node.priority:
+            if node.left is None:
+                node.left = Node(value, priority)
+                node.left.parent = node
+            else:
+                self._insert_recursion_dfs(node.left, value, priority)
+        else:
+            if node.right is None:
+                node.right = Node(value, priority)
+                node.right.parent = node
+            else:
+                self._insert_recursion_dfs(node.right, value, priority)
+
+    def print_tree(self, node):
+        if node is not None:
+            self.print_tree(node.left)
+            print(f"{node.value}({node.priority})")
+            self.print_tree(node.right)
+
+    def delete_highest_priority(self):
+        if self.root is None:
+            return None
+
+        current_node = self.root
+        while current_node.left:
+            current_node = current_node.left
+
+        deleted_node = (current_node.value, current_node.priority)
+        if current_node.parent is None:  # Root node
+            if current_node.right:
+                self.root = current_node.right
+                current_node.right.parent = None
+            else:
+                self.root = None
+        else:
+            if current_node.right:
+                current_node.parent.left = current_node.right
+                current_node.right.parent = current_node.parent
+            else:
+                current_node.parent.left = None
+
+        self._make_balance(current_node.parent)
+        return deleted_node
 
 
 class PriorityQueue:
-    def __init__(self, node: AVLTreeNode):
-        self.avl_tree = AVLTree(node)
+    def __init__(self, value, priority):
+        self.avl_tree = AVLTree(value, priority)
 
-    def enqueue(self, node: AVLTreeNode):
-        self.avl_tree.insert_element(self.avl_tree.root, node)
+    def enqueue(self, value, priority):
+        self.avl_tree.insert(value, priority)
 
     def dequeue(self):
-        if self.avl_tree.root:
-            max_priority_node = self.avl_tree.delete_element(self.avl_tree.root)
-            return max_priority_node
-        return
+        return self.avl_tree.delete_highest_priority()
 
-    def print_queue(self):
-        self.avl_tree.tree_print(self.avl_tree.root)
+    def is_empty(self):
+        return self.avl_tree.root is None

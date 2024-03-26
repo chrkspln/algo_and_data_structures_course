@@ -1,10 +1,7 @@
 # Рівень 3
 # Варіант 4
-#
-# Нехай у вас задане прямокутне поле, на якому встановлені датчики в певних місцях.
-# Перетніть його найкоротшим безпечним шляхом, не активуючи датчики.
-#
-# Прямокутне поле має форму матриці M × N, і нам потрібно знайти найкоротший шлях від
+
+# Прямокутне поле має форму матриці M × N, потрібно знайти найкоротший шлях від
 # будь-якої клітинки в першому стовпці до будь-якої клітинки в останньому стовпці матриці.
 # Датчики позначаються в матриці значенням 0, і всі її вісім суміжних осередків також
 # можуть активувати датчики. Шлях можна побудувати лише з комірок зі значенням 1,
@@ -18,7 +15,24 @@
 # Алгоритм має вивести довжину найкоротшого шляху, або -1 якщо такого не існує.
 
 
-def get_start_nodes_list(grid: [[int]]) -> (int, int):
+def read_input(file_name):
+    input_matrix = []
+    with open(file_name, "r") as file:
+        for line in file:
+            row = list(map(int, line.split()))
+            input_matrix.append(row)
+    file.close()
+    return input_matrix
+
+
+def write_output(path, file_name):
+    with open(file_name, "w") as file:
+        file.write(str(path))
+    file.close()
+    return file
+
+
+def get_start_nodes_list(grid: [[int]]) -> [(int, int)]:
     row = 0
     start_nodes = []
     while row < len(grid) - 1:
@@ -86,17 +100,21 @@ def find_path(start_nodes: [(int, int)], grid: [[int]]):
             visited.append(node)
 
             if node[1] == len(grid[0]) - 1:
-                shortest_path_list.append(len(path))
+                shortest_path_list.append(path)
 
             neighboring_nodes = get_neighbors(node, grid)
             for neighbor in neighboring_nodes:
                 if neighbor not in visited:
                     queue.append((neighbor, path[:]))
 
-    return min(shortest_path_list) if shortest_path_list else -1
+    return min(shortest_path_list) if shortest_path_list else -1, (
+        len(min(shortest_path_list)) if shortest_path_list else -1
+    )
 
 
-def short_mines_path_search(grid: [[int]]) -> int:
+def short_mines_path_search(file_name, output_file):
+    grid = read_input(file_name)
     grid = set_0(grid)
     start_nodes = get_start_nodes_list(grid)
-    return find_path(start_nodes, grid)
+    path = find_path(start_nodes, grid)
+    return write_output(path, output_file)
