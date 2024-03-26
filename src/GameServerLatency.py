@@ -12,8 +12,8 @@
 # Одне число — мiнiмальне значення найбiльшої затримки до клiєнта
 # (яке ми отримаємо при оптимальному розташуваннi сервера).
 
-import heapq
 import os
+from src.AVLPriorityQueue import *
 
 
 def read_input(file_name):
@@ -43,11 +43,10 @@ def shortest_paths_to_clients(
     visited_nodes = set()
     distances_to_vertexes = {key: int(1e10) for key in graph.keys()}
     distances_to_vertexes[start_point] = 0
-    pq = []
-    heapq.heapify(pq)
-    heapq.heappush(pq, (distances_to_vertexes[start_point], start_point))
-    while not len(pq) == 0:
-        dist_to_vertex, vertex = heapq.heappop(pq)
+    pq = PriorityQueue(start_point, distances_to_vertexes[start_point])
+
+    while not pq.is_empty():
+        vertex, dist_to_vertex = pq.dequeue()
         if vertex in visited_nodes:
             continue
         visited_nodes.add(vertex)
@@ -55,7 +54,7 @@ def shortest_paths_to_clients(
         for vertex2, latency_v1v2 in graph[vertex]:
             if dist_to_vertex + latency_v1v2 < distances_to_vertexes[vertex2]:
                 distances_to_vertexes[vertex2] = dist_to_vertex + latency_v1v2
-                heapq.heappush(pq, (distances_to_vertexes[vertex2], vertex2))
+                pq.enqueue(vertex2, distances_to_vertexes[vertex2])
     dist_to_clients = []
     for item in range(1, len(distances_to_vertexes) + 1):
         if item in clients:
