@@ -19,22 +19,22 @@ def next_state(pattern, state, c):
     return 0
 
 
-def transition_table(pattern, alphabet):
-    table = [[0 for i in range(len(alphabet))] for _ in range(len(pattern) + 1)]
+def transition_table(pattern, chars):
+    table = [[0 for i in range(len(chars))] for _ in range(len(pattern) + 1)]
     for state in range(len(pattern) + 1):
-        for c in alphabet:
-            table[state][alphabet.index(c)] = next_state(pattern, state, c)
+        for c in chars:
+            table[state][chars.index(c)] = next_state(pattern, state, c)
     return table
 
 
 def finite_automata_search(pattern, haystack):
     if pattern and haystack and len(pattern) <= len(haystack):
-        alphabet = list(sorted(set(haystack)))
+        chars = list(sorted(set(haystack)))
         indices = []
-        table = transition_table(pattern, alphabet)
+        table = transition_table(pattern, chars)
         state = 0
         for i in range(len(haystack)):
-            state = table[state][alphabet.index(haystack[i])]
+            state = table[state][chars.index(haystack[i])]
             if state == len(pattern):
                 indices.append(i - len(pattern) + 1)
         return indices
