@@ -5,7 +5,7 @@ from src.BFSShortMinesPath import *
 class TestBFSShortMinesPath(unittest.TestCase):
     def test_normal_case(self):
         file = "../src/resources/input_BFSShortMinesPath1.txt"
-        out = "../src/output_BFSShortMinesPath1.txt"
+        out = "../src/resources/output_BFSShortMinesPath1.txt"
         short_mines_path_search(file, out)
         with open("../src/resources/output_BFSShortMinesPath1.txt") as output_file:
             output = output_file.read()
@@ -17,7 +17,7 @@ class TestBFSShortMinesPath(unittest.TestCase):
 
     def test_empty_input(self):
         file = "../src/resources/input_BFSShortMinesPath2.txt"
-        out = "../src/output_BFSShortMinesPath2.txt"
+        out = "../src/resources/output_BFSShortMinesPath2.txt"
         short_mines_path_search(file, out)
         with open("../src/resources/output_BFSShortMinesPath2.txt") as output_file:
             output = output_file.read()
