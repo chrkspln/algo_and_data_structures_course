@@ -44,10 +44,11 @@ class DisjointSet:
 def min_span_tree(v: int, adj_dict: dict[int, list[tuple[int, int]]]):
     dsj_set = DisjointSet(v)
     min_weight = 0
-    for i in adj_dict.items():
-        vertex1 = i[0]
-        for l in range(len(adj_dict[vertex1])):
-            vertex2, weight = adj_dict[vertex1][l]
+    for item in adj_dict.items():
+        vertex1 = item[0]
+        for edge in range(len(adj_dict[vertex1])):
+            vertex2, weight = adj_dict[vertex1][edge]
+
             if dsj_set.find_main_parent(vertex1) != dsj_set.find_main_parent(vertex2):
                 min_weight += weight
                 dsj_set.rank_union(vertex1, vertex2)
