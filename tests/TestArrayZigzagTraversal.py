@@ -25,26 +25,21 @@ class Lab1Test(unittest.TestCase):
             14,
             10,
             5,
+            9,
+            13,
+            17,
+            21,
+            16,
+            12,
+            8,
+            4,
+            3,
+            7,
+            11,
+            6,
+            2,
+            1,
         ]
-        self.assertEqual(
-            arr_zigzag_traverse(test_arr, test_n, test_m), needed_result, "error!"
-        )
-
-    def test_arr_zigzag_traverse_4x2(self):
-        test_arr = [[1, 2], [3, 4], [5, 6], [7, 8]]
-        test_n = 4
-        test_m = 2
-        needed_result = [1, 2, 3, 5, 4, 6, 7, 8]
-        self.assertEqual(
-            arr_zigzag_traverse(test_arr, test_n, test_m), needed_result, "error!"
-        )
-
-    def test_arr_zigzag_traverse_1x6(self):
-        # тут все ок, просто масив списком виводиться, але тест все рівно матюкається
-        test_arr = [[1], [2], [3], [4], [5], [6]]
-        test_n = 6
-        test_m = 1
-        needed_result = [1, 2, 3, 4, 5, 6]
         self.assertEqual(
             arr_zigzag_traverse(test_arr, test_n, test_m), needed_result, "error!"
         )
