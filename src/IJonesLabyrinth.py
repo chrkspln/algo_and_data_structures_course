@@ -21,10 +21,12 @@ def read_input_file(file_name: os.PathLike[str]) -> list[list]:
         W, H = map(int, file.readline().split())
         input_matrix = [[] * W] * H
         for line in range(H):
-            row = list(map(str, file.readline().strip()))
+            input_matrix.append(file.read())  # ?
+            row = list(map(str, file.readline()))
+            # TODO: appending chars seems wrong here, redo
             input_matrix.append(row)
         file.close()
-        return input_matrix
+        return input_matrix, W, H
 
 
 def write_to_output_file(file_name: os.PathLike, pathways_count: int) -> TextIO:
@@ -56,34 +58,31 @@ reviewed, works as intended
 """
 
 
-def build_jumps_graph(character_positions: dict[str: [list[tuple[int, int]]]]):
+def build_graph(character_positions: dict[str: [list[tuple[int, int]]]]):
     graph = dict()
+    # jumps
     for key, positions in character_positions.items():
         for pos in positions:
             graph[pos] = []
             for i in range(len(positions)):
-                if positions[i][1] > pos[1]:
+                if positions[i][1] < pos[1]:
                     graph[pos].append(positions[i])
+    # left-only
+    for v in graph.keys():
+        for key in graph.keys():
+            if key not in graph[v]:
+                if key[0] == v[0] and key[1] == v[1] - 1:
+                    graph[v].append(key)
     return graph
 
 
-def build_full_graph(jumping_graph: dict[tuple[int, int], list]):
-    multigraph = jumping_graph
-    for v in multigraph.keys():
-        for key in multigraph.keys():
-            if key not in multigraph[v]:
-                if key[0] == v[0] and key[1] == v[1] + 1:
-                    multigraph[v].append(key)
-    return multigraph
-
-
 # TODO: make pathfinding w/o recursion and make it work on 1d array
-def all_paths(graph: dict[tuple[int, int], list], m, n):
-    end_points = [(0, n), (m, n)]
+def all_paths(graph: dict[tuple[int, int], list], last_row, last_column):
+    end_points = [(0, last_column), (last_row, last_column)]
+    starts = [(i, 0) for i in range(last_row + 1)]
     paths = 0
-    for i in range(n + 1):
-        start_point = (i, 0)
-        paths += counting(graph, start_point, end_points)
+    for i in end_points:
+        paths += counting(graph, i, starts)
     return paths
 
 
@@ -93,25 +92,3 @@ def counting(graph, start, ends, count=0):
     for v in graph[start]:
         count += counting(graph, v, ends)
     return count
-
-
-if __name__ == "__main__":
-    input_matrix = [
-        ['a', 'a', 'a'],
-        ['c', 'a', 'b'],
-        ['d', 'e', 'f']
-    ]
-    #   input_matrix = ['a','b','c','d','e','f','a','g','h','i']
-    #   input_matrix = [
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #       ["a", "a", "a", "a", "a", "a", "a"],
-    #   ]
-    character_positions = build_chars_positions(input_matrix)
-    jumping_graph = build_jumps_graph(character_positions)
-    multigraph = build_full_graph(jumping_graph)
-    paths = all_paths(multigraph, len(input_matrix[0]) - 1, len(input_matrix) - 1)
-    print(paths)
