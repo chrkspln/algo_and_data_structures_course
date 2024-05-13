@@ -16,7 +16,7 @@ class TestIJonesLabyrinth(unittest.TestCase):
         file = "../src/resources/ijones_line_case_in.csv"
         out = "../src/resources/ijones_line_case_out.txt"
         find_all_possible_paths(file, out)
-        with open("../src/resources/ijones_normal_case_out.txt") as output_file:
+        with open("../src/resources/ijones_line_case_out.txt") as output_file:
             output = output_file.read()
         expected = "2"
         self.assertEqual(output, expected)
@@ -25,7 +25,7 @@ class TestIJonesLabyrinth(unittest.TestCase):
         file = "../src/resources/ijones_a_case_in.csv"
         out = "../src/resources/ijones_a_case_out.txt"
         find_all_possible_paths(file, out)
-        with open("../src/resources/ijones_normal_case_out.txt") as output_file:
+        with open("../src/resources/ijones_a_case_out.txt") as output_file:
             output = output_file.read()
         expected = "201684"
         self.assertEqual(output, expected)
