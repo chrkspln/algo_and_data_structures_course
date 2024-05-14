@@ -12,7 +12,7 @@
 #   шляхiв для виходу з коридору.
 
 # overall time complexity: ~ O((W * H)^2 + W * H)
-# overall space complexity: ~ O(W * H)
+# overall space complexity: ~ O(W * H).
 
 import os
 
