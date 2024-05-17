@@ -11,7 +11,7 @@
 #   Вихiдний файл ijones .out повинен мiстити одне цiле число — кiлькiсть рiзних
 #   шляхiв для виходу з коридору.
 
-# overall time complexity: ~ O((W * H)^2 + W * H)
+# overall time complexity: ~ O((W * H)^2)
 # overall space complexity: ~ O(W * H).
 
 import os
@@ -110,7 +110,7 @@ def build_graph(character_positions: dict[str: [list[tuple[int, int]]]]):
     return graph
 
 
-def init_dp(graph, starts):
+def init_matrix_path_count_to_end_point(graph, starts):
     """
     Initialize the dynamic programming table.
 
@@ -121,10 +121,10 @@ def init_dp(graph, starts):
     Returns:
     - Initialized dynamic programming table.
     """
-    dp = {key: 0 for key in graph.keys()}
+    matrix_path_count_to_end_point = {key: 0 for key in graph.keys()}
     for start in starts:
-        dp[start] = 1
-    return dp
+        matrix_path_count_to_end_point[start] = 1
+    return matrix_path_count_to_end_point
 
 
 def all_paths(graph: dict[tuple[int, int], list], column_amount, row_amount):
@@ -151,14 +151,15 @@ def all_paths(graph: dict[tuple[int, int], list], column_amount, row_amount):
         graph
     )  # reverse topological sort of given graph to ensure bottom-up dynamic programming approach
     count = 0
-    dp = init_dp(graph, starts)
-    # Updating the DP table for each vertex in the sorted graph
+    matrix_path_count_to_end_point = init_matrix_path_count_to_end_point(graph, starts)
+    # Updating the matrix_path_count_to_end_point table for each vertex in the sorted graph
     for end in end_points:
         for v in sorted_graph:
             for e in graph[v]:
-                dp[e] += dp[v]
-        count += dp[end]  # Add the count for the current end point to the total count
-        dp = init_dp(graph, starts)  # Resetting the DP table for the next end point
+                matrix_path_count_to_end_point[e] += matrix_path_count_to_end_point[v]
+        count += matrix_path_count_to_end_point[end]  # Add the count for the current end point to the total count
+        # Resetting the matrix_path_count_to_end_point table for the next end point
+        matrix_path_count_to_end_point = init_matrix_path_count_to_end_point(graph, starts)
     return count
 
 
